@@ -1,0 +1,8 @@
+<RessourceBar xmlns="MarkLight">
+  <Region Id="Background" BackgroundColor="{backgroundColor}"  Width="{Width}" Height="{Height}" Margin="0">
+    <Region Id="Front" BackgroundColor="{frontColor}"
+            BackgroundImage="{backgroundImage}" BackgroundImageFillAmount="{fillAmount}"
+            BackgroundImageType="Filled" BackgroundImageFillMethod="Horizontal"
+            Width="{Width}" Height="{Height}" Margin="0" />
+  </Region>
+</RessourceBar>
