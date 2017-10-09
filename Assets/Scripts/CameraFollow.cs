@@ -9,8 +9,10 @@ public class CameraFollow : MonoBehaviour {
     public float slerpFactorDistance = 0.15f;
     public float minDistance = 10;
     public float maxDistance = 15;
-    private Vector3 defaultDistance = new Vector3(0,0,0);
-
+    public Vector3 positionOffset = new Vector3(0, 2, 0);
+    private Vector3 defaultDistance = new Vector3(0, 0, 0);
+    public bool followObstacles = true;
+    private int layerMask;
     private new Camera camera {
         get { return GetComponent<Camera>(); }
     }
@@ -19,6 +21,7 @@ public class CameraFollow : MonoBehaviour {
     // Use this for initialization
     void Start() {
         defaultDistance = (target.position - transform.position).normalized;
+        layerMask = LayerMask.GetMask("Obstacle");
     }
 
     // Update is called once per frame
@@ -33,19 +36,22 @@ public class CameraFollow : MonoBehaviour {
         }
         if (followDistance) {
             Vector3 distance = distanceToTarget(target);
-            transform.position = Vector3.Slerp(transform.position, target.position - distance, slerpFactorDistance);
+            transform.position = Vector3.Slerp(transform.position, (target.position + positionOffset) - distance, slerpFactorDistance);
+        }
+        if (followObstacles) {
+            collideWithObstacles(target);
         }
     }
 
     public Quaternion rotationToTarget(Transform target) {
-        Vector3 targetDirection = target.position - transform.position;
+        Vector3 targetDirection = (target.position + positionOffset) - transform.position;
         targetDirection = targetDirection.normalized;
         Quaternion targetRotation = Quaternion.LookRotation(((targetDirection + lowerLeftDirection) / 3).normalized, Vector3.up);
         return targetRotation;
     }
 
     public Vector3 distanceToTarget(Transform target) {
-        Vector3 targetDirection = target.position - transform.position;
+        Vector3 targetDirection = (target.position + positionOffset) - transform.position;
         float targetDistance = targetDirection.magnitude;
         targetDirection = targetDirection.normalized;
         if (targetDistance > maxDistance)
@@ -53,6 +59,14 @@ public class CameraFollow : MonoBehaviour {
         if (targetDistance < minDistance)
             return Vector3.Slerp(defaultDistance * minDistance, targetDirection * minDistance, 0.5f);
         return Vector3.Slerp(defaultDistance * targetDistance, targetDirection * targetDistance, 0.5f);
+    }
+
+    public void collideWithObstacles(Transform target) {
+        RaycastHit wallHit = new RaycastHit();
+        Ray wallRay = new Ray((target.position + positionOffset), transform.position - (target.position + positionOffset));
+        if (Physics.Raycast(wallRay, out wallHit, ((target.position + positionOffset) - transform.position).magnitude, layerMask)) {
+            transform.position = wallHit.point;
+        }
     }
 
     public Vector3 upperDirection {

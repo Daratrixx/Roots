@@ -448,6 +448,7 @@ MonoBehaviour:
   slerpFactorDistance: 0.05
   minDistance: 10
   maxDistance: 12.5
+  collideWithObstacles: 1
 --- !u!114 &687958104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -753,6 +754,14 @@ Prefab:
     - target: {fileID: 100000, guid: 4ce2b0e5e3efab44b9b2c03724b03850, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4ce2b0e5e3efab44b9b2c03724b03850, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 4ce2b0e5e3efab44b9b2c03724b03850, type: 3}
+      propertyPath: m_TagString
+      value: Obstacle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4ce2b0e5e3efab44b9b2c03724b03850, type: 3}
