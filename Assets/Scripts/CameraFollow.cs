@@ -1,10 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
     public Transform target;
+    public bool followAngle = true;
+    public float slerpFactorAngle = 0.15f;
+    public bool followDistance = true;
+    public float slerpFactorDistance = 0.15f;
+    public float minDistance = 10;
+    public float maxDistance = 15;
+    public Vector3 distanceOffset = new Vector3(0,0,0);
 
     private new Camera camera {
         get { return GetComponent<Camera>(); }
@@ -17,13 +22,19 @@ public class CameraFollow : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void LateUpdate() {
         follow(target);
     }
 
     public void follow(Transform target) {
-        Quaternion rotation = rotationToTarget(target);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
+        if (followAngle) {
+            Quaternion rotation = rotationToTarget(target);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, slerpFactorAngle);
+        }
+        if (followDistance) {
+            Vector3 distance = distanceToTarget(target);
+            transform.position = Vector3.Slerp(transform.position, target.position - distance, slerpFactorDistance);
+        }
     }
 
     public Quaternion rotationToTarget(Transform target) {
@@ -31,6 +42,17 @@ public class CameraFollow : MonoBehaviour {
         targetDirection = targetDirection.normalized;
         Quaternion targetRotation = Quaternion.LookRotation(((targetDirection + lowerLeftDirection) / 3).normalized, Vector3.up);
         return targetRotation;
+    }
+
+    public Vector3 distanceToTarget(Transform target) {
+        Vector3 targetDirection = target.position - transform.position;
+        float targetDistance = targetDirection.magnitude;
+        targetDirection = targetDirection.normalized;
+        if (targetDistance > maxDistance)
+            return targetDirection * maxDistance;
+        if (targetDistance < minDistance)
+            return targetDirection * minDistance;
+        return targetDirection * targetDistance;
     }
 
     public Vector3 upperDirection {
