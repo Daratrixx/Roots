@@ -9,7 +9,7 @@ public class CameraFollow : MonoBehaviour {
     public float slerpFactorDistance = 0.15f;
     public float minDistance = 10;
     public float maxDistance = 15;
-    public Vector3 distanceOffset = new Vector3(0,0,0);
+    private Vector3 defaultDistance = new Vector3(0,0,0);
 
     private new Camera camera {
         get { return GetComponent<Camera>(); }
@@ -18,7 +18,7 @@ public class CameraFollow : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-
+        defaultDistance = (target.position - transform.position).normalized;
     }
 
     // Update is called once per frame
@@ -49,10 +49,10 @@ public class CameraFollow : MonoBehaviour {
         float targetDistance = targetDirection.magnitude;
         targetDirection = targetDirection.normalized;
         if (targetDistance > maxDistance)
-            return targetDirection * maxDistance;
+            return Vector3.Slerp(defaultDistance * maxDistance, targetDirection * maxDistance, 0.5f);
         if (targetDistance < minDistance)
-            return targetDirection * minDistance;
-        return targetDirection * targetDistance;
+            return Vector3.Slerp(defaultDistance * minDistance, targetDirection * minDistance, 0.5f);
+        return Vector3.Slerp(defaultDistance * targetDistance, targetDirection * targetDistance, 0.5f);
     }
 
     public Vector3 upperDirection {
