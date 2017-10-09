@@ -38,8 +38,6 @@ public class FadeOn : MonoBehaviour {
             }
         }
         mesh.GetComponent<SkinnedMeshRenderer>().material.color = color;
-
-        Debug.Log((distance * 1) / 3);
     }
 
 
