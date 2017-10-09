@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour {
     public float minDistance = 10;
     public float maxDistance = 15;
     public Vector3 positionOffset = new Vector3(0, 2, 0);
-    private Vector3 defaultDistance = new Vector3(0, 0, 0);
+    //private Vector3 defaultDistance = new Vector3(0, 0, 0);
     public bool followObstacles = true;
     private int layerMask;
     private new Camera camera {
@@ -20,7 +20,7 @@ public class CameraFollow : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        defaultDistance = (target.position - transform.position).normalized;
+        //defaultDistance = (target.position - transform.position).normalized;
         layerMask = LayerMask.GetMask("Obstacle");
     }
 
@@ -55,10 +55,10 @@ public class CameraFollow : MonoBehaviour {
         float targetDistance = targetDirection.magnitude;
         targetDirection = targetDirection.normalized;
         if (targetDistance > maxDistance)
-            return Vector3.Slerp(defaultDistance * maxDistance, targetDirection * maxDistance, 0.5f);
+            return Vector3.Slerp(targetDirection * targetDistance, targetDirection * maxDistance, 0.5f);
         if (targetDistance < minDistance)
-            return Vector3.Slerp(defaultDistance * minDistance, targetDirection * minDistance, 0.5f);
-        return Vector3.Slerp(defaultDistance * targetDistance, targetDirection * targetDistance, 0.5f);
+            return Vector3.Slerp(targetDirection * targetDistance, targetDirection * minDistance, 0.5f);
+        return Vector3.Slerp(targetDirection * targetDistance, targetDirection * targetDistance, 0.5f);
     }
 
     public void collideWithObstacles(Transform target) {
