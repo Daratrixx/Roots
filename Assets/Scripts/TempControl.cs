@@ -22,8 +22,12 @@ public class TempControl : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         float timeFactor = Time.deltaTime;
-        walkCycle(timeFactor);
-        applyMovement(timeFactor);
+        if (Input.GetKeyDown(KeyCode.Return)) {
+            animator.SetTrigger("emote5");
+        } else {
+            walkCycle(timeFactor);
+            applyMovement(timeFactor);
+        }
     }
 
     void walkStart() {
